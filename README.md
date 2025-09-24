@@ -3,7 +3,7 @@ Project Assignment 2: Building Your Own Distributed System
 2258-CSE-5306-004  
 Name:  
 - John Song (ID)
-- Adam Emerson (ID)
+- Adam Emerson - 1000773509
 
 
 ## Simple Distributed Polling/Voting System  
