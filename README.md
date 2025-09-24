@@ -59,4 +59,4 @@ The distributed polling/voting system is designed around a **RESTful API** with 
 
 ---
 
-#### 2. Client-server gRPC
+#### 2. Microservice gRPC
