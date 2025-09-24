@@ -7,7 +7,8 @@ Name:
 
 
 ## Simple Distributed Polling/Voting System  
-This system allows users to create polls and vote, with the results being aggregated across the distributed nodes.
+This system allows users to create polls and vote, with the results being aggregated across the distributed nodes.  
+This system is designed to allow for the creation and management of polls across multiple, distributed nodes. It focuses on reliability and real-time result aggregation
 
 #### Five Functional Requirements
 - Create Poll: A user can create a new poll with a question and a set of options.
