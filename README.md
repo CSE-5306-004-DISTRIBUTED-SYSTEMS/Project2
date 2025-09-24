@@ -17,4 +17,10 @@ This system allows users to create polls and vote, with the results being aggreg
 - Close Poll: The creator of a poll can close it to prevent further voting.
 
 
-## 2 Designs 
+## Designs 2 patterns 
+
+#### 1. resources-based HTTP
+
+
+
+#### 2. Client-server gRPC
