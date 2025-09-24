@@ -59,4 +59,23 @@ The distributed polling/voting system is designed around a **RESTful API** with 
 
 ---
 
-#### 2. Microservice gRPC
+#### 2. Microservice gRPC 
+
+There are 5 nodes for this distributed systems.  
+- Entry Point (Load Balancers)
+- Application Logic 
+- Data Store
+
+
+**Nodes 1**: **Load Balancers**: These two nodes will be set up in a active-passive configuration. They are the single entry point for all client traffic. They distribute requests to the two servers. If one load balancer fails, the other can seamlessly take over. This prevents a single point of failure at the network edge.
+
+**Nodes 2 & 3**: **Application Logic**: These two nodes will act as your application servers. Each node will run logics (Polls, Voting, Results). This creates redundancy and load distribution. If one of these servers fails, the other can continue to process all requests.
+
+**Node 4 & 5**: **Database Server**: Application nodes (Nodes 1 and 2) will connect to this database to read and write data for storing voting, polling, and result table.
+
+#### Technology Stacks
+- Nginx 
+- Python 
+- gRPC
+- PostgreSQL
+
