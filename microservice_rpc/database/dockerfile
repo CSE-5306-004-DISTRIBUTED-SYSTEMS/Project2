@@ -1,0 +1,37 @@
+## dockerfile for database 
+FROM postgres
+
+# Set environment variables for DB setup
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=postgres
+ENV POSTGRES_DB=pollsdb
+
+
+COPY schema.sql /docker-entrypoint-initdb.d/
+
+
+## command line
+## docker build -t polls-primary .
+
+
+# docker run -d \
+#   --name primary \
+#   --network polls-net \
+#   -e POSTGRES_USER=postgres \
+#   -e POSTGRES_PASSWORD=postgres \
+#   -p 5432:5432 \
+#   polls-primary
+
+## docker exec -it primary psql -U postgres
+
+# connect to database
+#\l
+#\c
+#\dt
+# \d polls
+
+# INSERT INTO polls (id, question, options) 
+# VALUES ('a1b2c3d4-e5f6-7890-1234-567890abcdef', 
+#'What is your favorite color?', '{"Red", "Green", "Blue"}');
+
+# SELECT * FROM polls;
