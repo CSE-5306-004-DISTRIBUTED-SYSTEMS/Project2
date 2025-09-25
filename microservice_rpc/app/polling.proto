@@ -1,0 +1,3 @@
+// app/polling.proto
+syntax = "proto3";
+

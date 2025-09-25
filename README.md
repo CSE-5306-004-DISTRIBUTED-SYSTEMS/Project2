@@ -17,6 +17,20 @@ This system is designed to allow for the creation and management of polls across
 - List All Polls: A user can see a list of all available polls.
 - Close Poll: The creator of a poll can close it to prevent further voting.
 
+#### Database Design 
+##### Poll Table
+|uuid|poll_questions|options|status|create_at_time|
+|--|--|--|--|--|
+1|text|text[]| open/close|timestamp|
+
+##### Vote Table
+
+|userID|select_options|vote_time| uuid|
+|--|--|--|--|
+1|text|timestamp| froeign key|
+
+
+
 ## Designs 2 Patterns 
 
 ### 1. Resource Based Architecture w/ HTTP (REST API)
@@ -77,5 +91,6 @@ There are 5 nodes for this distributed systems.
 - Nginx 
 - Python 
 - gRPC
-- PostgreSQL
+- PostgreSQL  
+
 
