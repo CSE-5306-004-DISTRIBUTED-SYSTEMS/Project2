@@ -18,7 +18,7 @@
 -- );
 
 
-CREATE TABLE poll (
+CREATE TABLE IF NOT EXISTS poll (
     uuid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     poll_questions TEXT NOT NULL,
     options TEXT[] NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE poll (
     create_at_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE vote (
+CREATE TABLE IF NOT EXISTS vote (
     userID TEXT NOT NULL,
     select_options TEXT NOT NULL,
     vote_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

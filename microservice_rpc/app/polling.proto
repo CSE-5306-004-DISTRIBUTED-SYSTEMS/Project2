@@ -1,3 +1,82 @@
 // app/polling.proto
 syntax = "proto3";
 
+package polling; 
+
+// Service manage lifecycle of polls (Create, List, Close)
+
+service PollService{
+
+    // 'create poll' should be simple direction 
+    rpc CreatePoll(CreatePollRequest) returns (PollResponse);
+
+    // list all polls 
+    rpc ListPolls(Empty) returns (ListPollsResponse);
+
+    // close poll request 
+    rpc ClosePoll(PollRequest) returns (PollResponse);
+}
+
+// service manage the  voting 
+
+service VoteService{
+    rpc CastVote(CastVoteRequest) returns (VoteResponse);
+}
+
+
+// service manage getpoll result 
+service ResultService{
+    rpc GetPollResults(PollRequest) returns (PollResultResponse);
+
+    //rpc GetPollVoteDetails(PollRequest) returns (PollVoteDetailsResponse);
+}
+
+/// Data Structure.  Message
+// poll service
+message Empty {}
+
+message CreatePollRequest{
+    string poll_questions =1;
+    repeated string options = 2;
+}
+message PollResponse{
+    string uuid =1;
+    string poll_questions = 2;
+    repeated string options =3;
+    string status =4;
+    string create_at_time =5;
+}
+
+message PollRequest{
+    string uuid =1;
+}
+
+message ListPollsResponse{
+    repeated PollRequest polls =1;
+}
+
+// Vote service 
+message CastVoteRequest{
+    string uuid = 1;
+    string userID =2;
+    string select_options =3;
+}
+
+message VoteResponse{
+    string status =1;
+}
+
+
+// result service 
+message PollResultResponse{
+    string uuid =1;
+    string poll_questions =2;
+    map<string, int32> results = 3; // {"color":number}
+}
+
+
+/// python -m grpc_tools.protoc -Iapp --python_out=app --grpc_python_out=app ./app/polling.proto
+
+
+
+

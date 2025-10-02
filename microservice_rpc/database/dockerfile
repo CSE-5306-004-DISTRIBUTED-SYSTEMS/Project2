@@ -30,8 +30,12 @@ COPY schema.sql /docker-entrypoint-initdb.d/
 #\dt
 # \d polls
 
+
 # INSERT INTO polls (id, question, options) 
 # VALUES ('a1b2c3d4-e5f6-7890-1234-567890abcdef', 
 #'What is your favorite color?', '{"Red", "Green", "Blue"}');
 
 # SELECT * FROM polls;
+
+
+
