@@ -26,7 +26,7 @@ COPY schema.sql /docker-entrypoint-initdb.d/
 
 # connect to database
 #\l
-#\c
+#\c pollsdb
 #\dt
 # \d polls
 
