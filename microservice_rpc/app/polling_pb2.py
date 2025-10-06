@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rpolling.proto\x12\x07polling\"\x07\n\x05\x45mpty\"<\n\x11\x43reatePollRequest\x12\x16\n\x0epoll_questions\x18\x01 \x01(\t\x12\x0f\n\x07options\x18\x02 \x03(\t\"m\n\x0cPollResponse\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12\x16\n\x0epoll_questions\x18\x02 \x01(\t\x12\x0f\n\x07options\x18\x03 \x03(\t\x12\x0e\n\x06status\x18\x04 \x01(\t\x12\x16\n\x0e\x63reate_at_time\x18\x05 \x01(\t\"\x1b\n\x0bPollRequest\x12\x0c\n\x04uuid\x18\x01 \x01(\t\"8\n\x11ListPollsResponse\x12#\n\x05polls\x18\x01 \x03(\x0b\x32\x14.polling.PollRequest\"G\n\x0f\x43\x61stVoteRequest\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12\x0e\n\x06userID\x18\x02 \x01(\t\x12\x16\n\x0eselect_options\x18\x03 \x01(\t\"\x1e\n\x0cVoteResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"\xa5\x01\n\x12PollResultResponse\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12\x16\n\x0epoll_questions\x18\x02 \x01(\t\x12\x39\n\x07results\x18\x03 \x03(\x0b\x32(.polling.PollResultResponse.ResultsEntry\x1a.\n\x0cResultsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\x32\xc1\x01\n\x0bPollService\x12?\n\nCreatePoll\x12\x1a.polling.CreatePollRequest\x1a\x15.polling.PollResponse\x12\x37\n\tListPolls\x12\x0e.polling.Empty\x1a\x1a.polling.ListPollsResponse\x12\x38\n\tClosePoll\x12\x14.polling.PollRequest\x1a\x15.polling.PollResponse2J\n\x0bVoteService\x12;\n\x08\x43\x61stVote\x12\x18.polling.CastVoteRequest\x1a\x15.polling.VoteResponse2T\n\rResultService\x12\x43\n\x0eGetPollResults\x12\x14.polling.PollRequest\x1a\x1b.polling.PollResultResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rpolling.proto\x12\x07polling\"\x07\n\x05\x45mpty\"<\n\x11\x43reatePollRequest\x12\x16\n\x0epoll_questions\x18\x01 \x01(\t\x12\x0f\n\x07options\x18\x02 \x03(\t\"m\n\x0cPollResponse\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12\x16\n\x0epoll_questions\x18\x02 \x01(\t\x12\x0f\n\x07options\x18\x03 \x03(\t\x12\x0e\n\x06status\x18\x04 \x01(\t\x12\x16\n\x0e\x63reate_at_time\x18\x05 \x01(\t\"\x1b\n\x0bPollRequest\x12\x0c\n\x04uuid\x18\x01 \x01(\t\"9\n\x11ListPollsResponse\x12$\n\x05polls\x18\x01 \x03(\x0b\x32\x15.polling.PollResponse\"G\n\x0f\x43\x61stVoteRequest\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12\x0e\n\x06userID\x18\x02 \x01(\t\x12\x16\n\x0eselect_options\x18\x03 \x01(\t\"\x1e\n\x0cVoteResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"\xa5\x01\n\x12PollResultResponse\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12\x16\n\x0epoll_questions\x18\x02 \x01(\t\x12\x39\n\x07results\x18\x03 \x03(\x0b\x32(.polling.PollResultResponse.ResultsEntry\x1a.\n\x0cResultsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\x32\xc1\x01\n\x0bPollService\x12?\n\nCreatePoll\x12\x1a.polling.CreatePollRequest\x1a\x15.polling.PollResponse\x12\x37\n\tListPolls\x12\x0e.polling.Empty\x1a\x1a.polling.ListPollsResponse\x12\x38\n\tClosePoll\x12\x14.polling.PollRequest\x1a\x15.polling.PollResponse2J\n\x0bVoteService\x12;\n\x08\x43\x61stVote\x12\x18.polling.CastVoteRequest\x1a\x15.polling.VoteResponse2T\n\rResultService\x12\x43\n\x0eGetPollResults\x12\x14.polling.PollRequest\x1a\x1b.polling.PollResultResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -42,19 +42,19 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_POLLREQUEST']._serialized_start=208
   _globals['_POLLREQUEST']._serialized_end=235
   _globals['_LISTPOLLSRESPONSE']._serialized_start=237
-  _globals['_LISTPOLLSRESPONSE']._serialized_end=293
-  _globals['_CASTVOTEREQUEST']._serialized_start=295
-  _globals['_CASTVOTEREQUEST']._serialized_end=366
-  _globals['_VOTERESPONSE']._serialized_start=368
-  _globals['_VOTERESPONSE']._serialized_end=398
-  _globals['_POLLRESULTRESPONSE']._serialized_start=401
-  _globals['_POLLRESULTRESPONSE']._serialized_end=566
-  _globals['_POLLRESULTRESPONSE_RESULTSENTRY']._serialized_start=520
-  _globals['_POLLRESULTRESPONSE_RESULTSENTRY']._serialized_end=566
-  _globals['_POLLSERVICE']._serialized_start=569
-  _globals['_POLLSERVICE']._serialized_end=762
-  _globals['_VOTESERVICE']._serialized_start=764
-  _globals['_VOTESERVICE']._serialized_end=838
-  _globals['_RESULTSERVICE']._serialized_start=840
-  _globals['_RESULTSERVICE']._serialized_end=924
+  _globals['_LISTPOLLSRESPONSE']._serialized_end=294
+  _globals['_CASTVOTEREQUEST']._serialized_start=296
+  _globals['_CASTVOTEREQUEST']._serialized_end=367
+  _globals['_VOTERESPONSE']._serialized_start=369
+  _globals['_VOTERESPONSE']._serialized_end=399
+  _globals['_POLLRESULTRESPONSE']._serialized_start=402
+  _globals['_POLLRESULTRESPONSE']._serialized_end=567
+  _globals['_POLLRESULTRESPONSE_RESULTSENTRY']._serialized_start=521
+  _globals['_POLLRESULTRESPONSE_RESULTSENTRY']._serialized_end=567
+  _globals['_POLLSERVICE']._serialized_start=570
+  _globals['_POLLSERVICE']._serialized_end=763
+  _globals['_VOTESERVICE']._serialized_start=765
+  _globals['_VOTESERVICE']._serialized_end=839
+  _globals['_RESULTSERVICE']._serialized_start=841
+  _globals['_RESULTSERVICE']._serialized_end=925
 # @@protoc_insertion_point(module_scope)

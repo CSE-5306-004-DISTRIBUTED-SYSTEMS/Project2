@@ -52,7 +52,7 @@ message PollRequest{
 }
 
 message ListPollsResponse{
-    repeated PollRequest polls =1;
+    repeated PollResponse polls =1;
 }
 
 // Vote service 
