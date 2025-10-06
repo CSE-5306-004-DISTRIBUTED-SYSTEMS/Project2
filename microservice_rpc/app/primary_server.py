@@ -60,7 +60,7 @@ class PollServiceImpl(polling_pb2_grpc.PollServiceServicer):
         cur = conn.cursor()
         cur.execute(
             "INSERT INTO poll (poll_questions, options) VALUES (%s, %s) RETURNING uuid, poll_questions, options, status, create_at_time",
-            (request.poll_questions, request.options), ## maybe list(options)
+            (request.poll_questions, list(request.options)), ## maybe list(options)
         )
         i = cur.fetchone()
         conn.commit()
@@ -74,14 +74,14 @@ class PollServiceImpl(polling_pb2_grpc.PollServiceServicer):
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute(
-            "SELECT poll_questions, options, status, create_at_time FROM poll ORDER BY create_at_time DESC"
+            "SELECT uuid, poll_questions, options, status, create_at_time FROM poll ORDER BY create_at_time DESC"
         )
         polls_data = cur.fetchall()
         cur.close()
         conn.close()
-        polls_list = [polling_pb2.PollRequest(uuid=str(r[0]),poll_questions=r[1],options=r[2], status=r[3],) for r in polls_data]
+        polls_list = [polling_pb2.PollResponse(uuid=str(r[0]),poll_questions=r[1],options=r[2], status=r[3]) for r in polls_data]
 
-        return polling_pb2.ListPollsResponse(polls_list)
+        return polling_pb2.ListPollsResponse(polls=polls_list) ## must polls = poll_list
 
     ## close poll 
     def ClosePoll(self, request, context):
@@ -89,8 +89,7 @@ class PollServiceImpl(polling_pb2_grpc.PollServiceServicer):
             cur = conn.cursor()
             cur.execute(
                 "UPDATE poll SET status = 'close' WHERE uuid=%s RETURNING uuid, poll_questions, options, status, create_at_time",
-                (request.uuid),
-            )
+                (request.uuid,))
             data = cur.fetchone()
             if data is None:
                 context.set_code(grpc.StatusCode.NOT_FOUND)
@@ -112,12 +111,11 @@ class VoteServiceImpl(polling_pb2_grpc.VoteServiceServicer):
         with get_db_connection() as conn: 
             cur = conn.cursor()
             cur.execute("SELECT status, options FROM poll WHERE uuid=%s",
-                        (request.uuid))
+                        (request.uuid,)) ## add ,  to let driver recongize tuple. 
             data = cur.fetchone()
             if data is None:
                 return polling_pb2.VoteResponse(status="Poll Not Found")
-            status = data[3]
-            options = data[2]
+            status, options = data
             if status != 'open':
                 return polling_pb2.VoteResponse(status="Poll Closed")
             if request.select_options not in options:
@@ -142,17 +140,15 @@ class ResultServiceImpl(polling_pb2_grpc.ResultServiceServicer):
     def GetPollResults(self, request, context):
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute(
-            "SELECT polls_questions, options FROM poll WHERE uuid=%s",
-            (request.uuid)
-        )
+        cur.execute("SELECT poll_questions, options FROM poll WHERE uuid=%s",
+                    (request.uuid,))
         data = cur.fetchone()
         if not data:
             context.set_code(grpc.StatusCode.NOT_FOUND)
             context.set_details("Poll not found")
             return polling_pb2.PollResultResponse()
         question, options = data
-        results = {options: 0 for option in options}
+        results = {option: 0 for option in options}
         cur.execute("SELECT select_options, COUNT(*) FROM vote WHERE uuid = %s GROUP BY select_options",
                     (request.uuid,))
         vote_counts = cur.fetchall()
@@ -162,7 +158,6 @@ class ResultServiceImpl(polling_pb2_grpc.ResultServiceServicer):
 
         cur.close()
         conn.close()
-        
         return polling_pb2.PollResultResponse(uuid=request.uuid, poll_questions= question, results=results)
 
 
@@ -173,15 +168,16 @@ def serve():
     polling_pb2_grpc.add_PollServiceServicer_to_server(PollServiceImpl(), server)
     polling_pb2_grpc.add_VoteServiceServicer_to_server(VoteServiceImpl(), server)
     polling_pb2_grpc.add_ResultServiceServicer_to_server(ResultServiceImpl(), server)
-    
+
     server.add_insecure_port('[::]:50051')
     server.start()
-    
+
     print("gRPC Voting server started on port 50051.")
     server.wait_for_termination()
 
 
 if __name__ == '__main__':
+    test_connection()
     serve()
 
 

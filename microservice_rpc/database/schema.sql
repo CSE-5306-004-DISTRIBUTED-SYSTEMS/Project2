@@ -30,5 +30,6 @@ CREATE TABLE IF NOT EXISTS vote (
     userID TEXT NOT NULL,
     select_options TEXT NOT NULL,
     vote_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    uuid UUID REFERENCES poll(uuid)
+    uuid UUID REFERENCES poll(uuid),
+    PRIMARY KEY (uuid,userID) --limit user per vote at a poll.
 );
