@@ -3,7 +3,7 @@ import polling_pb2
 import polling_pb2_grpc
 
 def run_test():
-    with grpc.insecure_channel('localhost:50051') as channel:
+    with grpc.insecure_channel('localhost:8080') as channel:
         ## create client stub for service 
         poll_stub = polling_pb2_grpc.PollServiceStub(channel)
         vote_stub = polling_pb2_grpc.VoteServiceStub(channel)
