@@ -31,6 +31,9 @@ This system is designed to allow for the creation and management of polls across
 ## 2. Evaluation  
 Perofrmance (latency, throughput) & Scalability. 
 
+### 2.0 Hardware 
+PC: Macbook air (my machine?) / your machine
+
 ### 2.1 Experiement (write-heavy scalability) - Voting
 - Many users vote at the same time. 
 
