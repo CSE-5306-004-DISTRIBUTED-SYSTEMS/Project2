@@ -1,0 +1,116 @@
+
+version: '3.8'
+
+services:
+  # The Primary Database (Node 4)
+  db-primary:
+    image: postgres:13
+    command: ["primary"]
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_primary:/var/lib/postgresql/data
+      - ./init.sh:/docker-entrypoint-init.sh
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
+    environment: &db-env
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pollsdb
+      POSTGRES_REPLICATION_USER: replicator
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+    networks:
+      - db-net
+
+  # The Standby/Replica Database (Node 5)
+  db-replica:
+    image: postgres:13
+    command: ["replica"]
+    volumes:
+      - postgres_data_replica:/var/lib/postgresql/data
+      - ./init.sh:/docker-entrypoint-init.sh
+    environment: *db-env
+    depends_on:
+      db-primary:
+        condition: service_healthy
+    networks:
+      - db-net
+
+networks:
+  db-net:
+
+volumes:
+  postgres_data_primary:
+  postgres_data_replica:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# version: '3.8'
+
+# services:
+#   db-primary:
+#     image: postgres:13
+#     container_name: db-primary
+#     command: ["primary"]
+#     volumes:
+#       - postgres_data_primary:/var/lib/postgresql/data
+#       - ./database/init.sh:/docker-entrypoint-init.sh
+#       - ./database/postgresql.conf:/etc/postgresql/postgresql.conf
+#       - ./database/pg_hba.conf:/etc/postgresql/pg_hba.conf
+#     environment: &db-env
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: postgres
+#       POSTGRES_REPLICATION_USER: replicator
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U postgres"]
+#       interval: 5s
+#       timeout: 5s
+#       retries: 5
+#     networks:
+#       - db-net
+
+#   db-replica:
+#     image: postgres:13
+#     container_name: db-replica
+#     command: ["replica"]
+#     volumes:
+#       - postgres_data_replica:/var/lib/postgresql/data
+#       - ./postgres/init.sh:/docker-entrypoint-init.sh
+#     environment: *db-env
+#     depends_on:
+#       db-primary:
+#         condition: service_healthy
+#     networks:
+#       - db-net
+
+# networks:
+#   db-net:
+
+# volumes:
+#   postgres_data_primary:
+#   postgres_data_replica:
