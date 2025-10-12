@@ -1,0 +1,62 @@
+[
+  {
+    "num_users": 10,
+    "avg_latency": 0.016983795166015624,
+    "throughput": 510.5168090751966,
+    "scenario": "voting"
+  },
+  {
+    "num_users": 10,
+    "avg_latency": 0.011854052543640137,
+    "throughput": 695.4113472825546,
+    "scenario": "results"
+  },
+  {
+    "num_users": 50,
+    "avg_latency": 0.030675692558288573,
+    "throughput": 920.6716860197116,
+    "scenario": "voting"
+  },
+  {
+    "num_users": 50,
+    "avg_latency": 0.02282609462738037,
+    "throughput": 1233.662364554043,
+    "scenario": "results"
+  },
+  {
+    "num_users": 100,
+    "avg_latency": 0.0568023681640625,
+    "throughput": 848.707504466824,
+    "scenario": "voting"
+  },
+  {
+    "num_users": 100,
+    "avg_latency": 0.0526692008972168,
+    "throughput": 1001.2422716096536,
+    "scenario": "results"
+  },
+  {
+    "num_users": 500,
+    "avg_latency": 0.21269902038574218,
+    "throughput": 1073.5807697072516,
+    "scenario": "voting"
+  },
+  {
+    "num_users": 500,
+    "avg_latency": 0.18406919860839843,
+    "throughput": 1238.4516991601342,
+    "scenario": "results"
+  },
+  {
+    "num_users": 1000,
+    "avg_latency": 0.35202023649215697,
+    "throughput": 1228.4844810366087,
+    "scenario": "voting"
+  },
+  {
+    "num_users": 1000,
+    "avg_latency": 0.3553161895275116,
+    "throughput": 1264.6240578947195,
+    "scenario": "results"
+  }
+]

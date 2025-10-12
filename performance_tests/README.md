@@ -1,6 +1,6 @@
 # Simple Performance Testing Scripts
 
-Simple performance testing scripts for the REST API architecture to generate latency and throughput data for the Report.md evaluation section.
+Simple performance testing scripts for both REST API and gRPC microservice architectures to generate latency and throughput data for the Report.md evaluation section.
 
 ## Quick Start
 
@@ -13,18 +13,33 @@ Simple performance testing scripts for the REST API architecture to generate lat
    pip install aiohttp
    ```
 
-2. **Start your REST API system:**
+2. **Start your system (choose one):**
+
+   **For REST API testing:**
 
    ```bash
    cd ../rest_https
    docker-compose up --build
    ```
 
+   **For gRPC testing:**
+
+   ```bash
+   cd ../microservice_rpc
+   docker-compose up --build
+   ```
+
 3. **Run the performance tests:**
+
    ```bash
    cd ../performance_tests
    source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+   # For REST API testing
    python simple_test_runner.py
+
+   # For gRPC testing
+   python grpc_test_runner.py
    ```
 
 ## What It Tests
@@ -44,14 +59,23 @@ The script generates:
 
 ## Files
 
-- `rest_api_performance.py` - Main performance testing script (simplified)
-- `simple_test_runner.py` - Easy-to-use test runner
+**REST API Testing:**
+
+- `rest_api_performance.py` - REST API performance testing script
+- `simple_test_runner.py` - REST API test runner
+
+**gRPC Testing:**
+
+- `grpc_performance.py` - gRPC performance testing script
+- `grpc_test_runner.py` - gRPC test runner
 
 ## Requirements
 
 - Python 3.7+
-- aiohttp library (installed automatically)
-- REST API running on localhost:3005
+- aiohttp library (for REST API testing)
+- grpcio library (for gRPC testing)
+- REST API running on localhost:3005 (for REST testing)
+- gRPC service running on localhost:8080 (for gRPC testing)
 
 ## Usage
 
@@ -59,9 +83,13 @@ The script generates:
 # Activate virtual environment first
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Run all tests with default user counts
+# REST API Testing
 python simple_test_runner.py
-
 # Or run directly with custom user counts
 python rest_api_performance.py --users 10 50 100
+
+# gRPC Testing
+python grpc_test_runner.py
+# Or run directly with custom user counts
+python grpc_performance.py --users 10 50 100
 ```
