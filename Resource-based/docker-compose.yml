@@ -1,0 +1,146 @@
+services:
+  # Database Shard 1
+  db-shard-1:
+    image: mariadb:10.11
+    container_name: polling-db-shard-1
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: polling_shard_1
+      MYSQL_USER: polling_user
+      MYSQL_PASSWORD: polling_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db1_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - polling-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "polling_user",
+          "-ppolling_password",
+        ]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+
+  # Database Shard 2
+  db-shard-2:
+    image: mariadb:10.11
+    container_name: polling-db-shard-2
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: polling_shard_2
+      MYSQL_USER: polling_user
+      MYSQL_PASSWORD: polling_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - db2_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - polling-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "polling_user",
+          "-ppolling_password",
+        ]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+
+  # Database Middleware
+  middleware:
+    build:
+      context: ./middleware
+      dockerfile: Dockerfile
+    container_name: polling-middleware
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DB1_HOST: db-shard-1
+      DB1_PORT: 3306
+      DB1_USER: polling_user
+      DB1_PASSWORD: polling_password
+      DB1_NAME: polling_shard_1
+      DB2_HOST: db-shard-2
+      DB2_PORT: 3306
+      DB2_USER: polling_user
+      DB2_PASSWORD: polling_password
+      DB2_NAME: polling_shard_2
+    ports:
+      - "3001:3001"
+    depends_on:
+      db-shard-1:
+        condition: service_healthy
+      db-shard-2:
+        condition: service_healthy
+    networks:
+      - polling-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      timeout: 10s
+      retries: 5
+      interval: 30s
+
+  # API Service
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: polling-api
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MIDDLEWARE_URL: http://middleware:3001
+    ports:
+      - "3000:3000"
+    depends_on:
+      middleware:
+        condition: service_healthy
+    networks:
+      - polling-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      timeout: 10s
+      retries: 5
+      interval: 30s
+
+  # Frontend (React App) - Commented out for now
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   container_name: polling-frontend
+  #   environment:
+  #     REACT_APP_API_URL: http://localhost:3000
+  #   ports:
+  #     - "3002:80"
+  #   depends_on:
+  #     - api
+  #   networks:
+  #     - polling-network
+
+volumes:
+  db1_data:
+    driver: local
+  db2_data:
+    driver: local
+
+networks:
+  polling-network:
+    driver: bridge
