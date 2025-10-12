@@ -1,13 +1,33 @@
-## dockerfile for database 
-FROM postgres
+## dockerfile for database  First Version 
+# FROM postgres
 
-# Set environment variables for DB setup
-ENV POSTGRES_USER=postgres
-ENV POSTGRES_PASSWORD=postgres
-ENV POSTGRES_DB=pollsdb
+# # Set environment variables for DB setup
+# ENV POSTGRES_USER=postgres
+# ENV POSTGRES_PASSWORD=postgres
+# ENV POSTGRES_DB=pollsdb
 
 
-COPY schema.sql /docker-entrypoint-initdb.d/
+# COPY schema.sql /docker-entrypoint-initdb.d/
+# COPY pg_hba.conf /docker-entrypoint-initdb.d/
+# COPY postgresql.conf /etc/postgresql/
+
+
+
+#========================================
+
+FROM postgres:13
+RUN apt-get update && apt-get install -y gosu
+# Copy initialization scripts and configs
+COPY schema.sql /docker-entrypoint-initdb.d/schema.sql
+COPY pg_hba.conf /etc/postgresql/pg_hba.conf
+COPY postgresql.conf /etc/postgresql/postgresql.conf
+COPY init.sh /docker-entrypoint-initdb.d/init.sh
+
+RUN chmod +x /docker-entrypoint-initdb.d/init.sh
+
+
+
+
 
 
 ## command line

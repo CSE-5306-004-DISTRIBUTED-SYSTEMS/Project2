@@ -1,41 +1,47 @@
-
 version: '3.8'
 
 services:
-  # The Primary Database (Node 4)
   db-primary:
     image: postgres:13
-    command: ["primary"]
+    container_name: db-primary
+    entrypoint: ["/docker-entrypoint-init.sh", "primary"]
     ports:
       - "5432:5432"
     volumes:
       - postgres_data_primary:/var/lib/postgresql/data
       - ./init.sh:/docker-entrypoint-init.sh
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./replication_init.sh:/docker-entrypoint-initdb.d/replication_init.sh
       - ./postgresql.conf:/etc/postgresql/postgresql.conf
       - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
-    environment: &db-env
+    environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: pollsdb
       POSTGRES_REPLICATION_USER: replicator
+      POSTGRES_REPLICATION_PASSWORD: replicator
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
     networks:
       - db-net
 
-  # The Standby/Replica Database (Node 5)
   db-replica:
     image: postgres:13
-    command: ["replica"]
-    volumes:
-      - postgres_data_replica:/var/lib/postgresql/data
-      - ./init.sh:/docker-entrypoint-init.sh
-    environment: *db-env
+    container_name: db-replica
+    entrypoint: ["/docker-entrypoint-init.sh", "replica"]
     depends_on:
       db-primary:
         condition: service_healthy
+    volumes:
+      - postgres_data_replica:/var/lib/postgresql/data
+      - ./init.sh:/docker-entrypoint-init.sh
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pollsdb
+      POSTGRES_REPLICATION_USER: replicator
+      POSTGRES_REPLICATION_PASSWORD: replicator
     networks:
       - db-net
 
@@ -47,6 +53,53 @@ volumes:
   postgres_data_replica:
 
 
+
+
+
+# version: '3.8'
+
+# services:
+#   db-primary:
+#     build: .
+#     container_name: db-primary
+#     entrypoint: ["/docker-entrypoint-initdb.d/init.sh", "primary"]
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - postgres_data_primary:/var/lib/postgresql/data
+#     environment:
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: postgres
+#       POSTGRES_DB: pollsdb
+#       POSTGRES_REPLICATION_USER: replicator
+#       POSTGRES_REPLICATION_PASSWORD: replicator
+#     networks:
+#       - db-net
+
+#   db-replica:
+#     build: .
+#     container_name: db-replica
+#     entrypoint: ["/docker-entrypoint-initdb.d/init.sh", "replica"]
+#     depends_on:
+#       db-primary:
+#         condition: service_healthy
+#     volumes:
+#       - postgres_data_replica:/var/lib/postgresql/data
+#     environment:
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: postgres
+#       POSTGRES_DB: pollsdb
+#       POSTGRES_REPLICATION_USER: replicator
+#       POSTGRES_REPLICATION_PASSWORD: replicator
+#     networks:
+#       - db-net
+
+# networks:
+#   db-net:
+
+# volumes:
+#   postgres_data_primary:
+#   postgres_data_replica:
 
 
 
