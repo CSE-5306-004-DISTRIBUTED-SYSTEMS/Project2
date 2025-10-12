@@ -30,15 +30,15 @@ def run_test():
         for poll in list_response.polls:
             print(f"-ID: {poll.uuid}, Question: {poll.poll_questions}, Status: {poll.status}\n")
 
-        # # --- 3. Cast a Vote --- 
-        # print("------3. Caste Vote------")
-        # vote_request = polling_pb2.CastVoteRequest(
-        #     uuid="c905c351-6129-4f05-970e-0d96498adc30",
-        #     userID = "John-Song4",
-        #     select_options="dog"
-        # )
-        # vote_response = vote_stub.CastVote(vote_request)
-        # print(f"Vote cast status: {vote_response.status}\n")
+        # --- 3. Cast a Vote --- 
+        print("------3. Caste Vote------")
+        vote_request = polling_pb2.CastVoteRequest(
+            uuid="c28ef63-95a0-4f6e-8048-48347c928d88",
+            userID = "John-Song4",
+            select_options="dog"
+        )
+        vote_response = vote_stub.CastVote(vote_request)
+        print(f"Vote cast status: {vote_response.status}\n")
 
 
         #------ 4. Get Poll Results ---------- 
