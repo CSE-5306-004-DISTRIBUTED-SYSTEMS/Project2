@@ -1,46 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { pollApi } from "../api";
-import { Poll, User } from "../types";
+import { pollApi, Poll } from "../api";
 import PollCard from "./PollCard";
 
-interface PollListProps {
-  user: User;
-  refreshTrigger: number;
-}
-
-const PollList: React.FC<PollListProps> = ({ user, refreshTrigger }) => {
+const PollList: React.FC = () => {
   const [polls, setPolls] = useState<Poll[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const fetchPolls = async () => {
+  const loadPolls = async () => {
     try {
-      setLoading(true);
-      const pollsData = await pollApi.getAll();
-      setPolls(pollsData);
       setError("");
+      const allPolls = await pollApi.getAll();
+      setPolls(allPolls);
     } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to fetch polls");
+      setError(err.response?.data?.error || "Failed to load polls");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPolls();
-  }, [refreshTrigger]);
+    loadPolls();
+  }, []);
 
-  const handleVoteCast = () => {
-    // Refresh polls after a vote is cast
-    fetchPolls();
+  const handlePollUpdated = () => {
+    loadPolls();
   };
 
-  const handlePollClosed = () => {
-    // Refresh polls after a poll is closed
-    fetchPolls();
-  };
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md">
         <div className="animate-pulse">
@@ -57,40 +44,45 @@ const PollList: React.FC<PollListProps> = ({ user, refreshTrigger }) => {
   if (error) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
+        <div className="text-red-600 text-center">
+          <p className="mb-4">{error}</p>
+          <button
+            onClick={loadPolls}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          >
+            Retry
+          </button>
         </div>
-        <button
-          onClick={fetchPolls}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-        >
-          Retry
-        </button>
+      </div>
+    );
+  }
+
+  if (polls.length === 0) {
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-md text-center">
+        <p className="text-gray-500 mb-4">No polls available yet.</p>
+        <p className="text-sm text-gray-400">
+          Create the first poll to get started!
+        </p>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-gray-800">All Polls</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-gray-800">All Polls</h2>
+        <button
+          onClick={loadPolls}
+          className="text-sm text-blue-600 hover:text-blue-800"
+        >
+          Refresh
+        </button>
+      </div>
 
-      {polls.length === 0 ? (
-        <div className="bg-white p-6 rounded-lg shadow-md text-center text-gray-500">
-          No polls available. Create the first one!
-        </div>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {polls.map((poll) => (
-            <PollCard
-              key={poll.id}
-              poll={poll}
-              user={user}
-              onVoteCast={handleVoteCast}
-              onPollClosed={handlePollClosed}
-            />
-          ))}
-        </div>
-      )}
+      {polls.map((poll) => (
+        <PollCard key={poll.id} poll={poll} onPollUpdated={handlePollUpdated} />
+      ))}
     </div>
   );
 };

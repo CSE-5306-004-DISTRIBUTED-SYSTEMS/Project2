@@ -1,91 +1,78 @@
 import React, { useState, useEffect } from "react";
-import { pollApi } from "../api";
-import { Poll, User, PollResults } from "../types";
+import { pollApi, Poll, PollResults } from "../api";
 
 interface PollCardProps {
   poll: Poll;
-  user: User;
-  onVoteCast: () => void;
-  onPollClosed: () => void;
+  onPollUpdated: () => void;
 }
 
-const PollCard: React.FC<PollCardProps> = ({
-  poll,
-  user,
-  onVoteCast,
-  onPollClosed,
-}) => {
+const PollCard: React.FC<PollCardProps> = ({ poll, onPollUpdated }) => {
   const [results, setResults] = useState<PollResults | null>(null);
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [voting, setVoting] = useState(false);
-  const [closing, setClosing] = useState(false);
+  const [isVoting, setIsVoting] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [error, setError] = useState("");
+  const [showResults, setShowResults] = useState(!poll.isActive);
 
-  const fetchResults = async () => {
+  useEffect(() => {
+    if (showResults) {
+      loadResults();
+    }
+  }, [poll.id, showResults]);
+
+  const loadResults = async () => {
     try {
-      const resultsData = await pollApi.getResults(poll.id);
-      setResults(resultsData);
+      const pollResults = await pollApi.getResults(poll.id);
+      setResults(pollResults);
     } catch (err: any) {
-      console.error("Failed to fetch results:", err);
+      console.error("Failed to load results:", err);
     }
   };
 
-  useEffect(() => {
-    fetchResults();
-  }, [poll.id]);
+  const handleVote = async (optionIndex: number) => {
+    if (!poll.isActive) return;
 
-  const handleVote = async () => {
-    if (selectedOption === null) return;
-
-    setVoting(true);
+    setIsVoting(true);
     setError("");
 
     try {
-      await pollApi.vote(poll.id, {
-        userId: user.id,
-        optionIndex: selectedOption,
-      });
-      await fetchResults();
-      onVoteCast();
-      setSelectedOption(null);
+      await pollApi.vote(poll.id, optionIndex);
+      setShowResults(true);
+      onPollUpdated();
     } catch (err: any) {
       setError(err.response?.data?.error || "Failed to cast vote");
     } finally {
-      setVoting(false);
+      setIsVoting(false);
     }
   };
 
   const handleClosePoll = async () => {
-    setClosing(true);
+    setIsClosing(true);
     setError("");
 
     try {
-      await pollApi.close(poll.id, user.id);
-      await fetchResults();
-      onPollClosed();
+      await pollApi.close(poll.id);
+      onPollUpdated();
     } catch (err: any) {
       setError(err.response?.data?.error || "Failed to close poll");
     } finally {
-      setClosing(false);
+      setIsClosing(false);
     }
   };
 
-  const isCreator = poll.creatorId === user.id;
-  const maxVotes = results ? Math.max(...results.votes, 1) : 1;
+  const toggleResults = () => {
+    setShowResults(!showResults);
+  };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-2">
-          {poll.question}
-        </h3>
-        <div className="flex items-center justify-between text-sm text-gray-500">
-          <span>Total votes: {results?.totalVotes || 0}</span>
+    <div className="bg-white p-6 rounded-lg shadow-md border">
+      <div className="flex justify-between items-start mb-4">
+        <h3 className="text-xl font-semibold text-gray-800">{poll.question}</h3>
+        <div className="flex items-center gap-2">
           <span
-            className={`px-2 py-1 rounded-full text-xs ${
+            className={`px-2 py-1 rounded-full text-xs font-medium ${
               poll.isActive
                 ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
+                : "bg-gray-100 text-gray-800"
             }`}
           >
             {poll.isActive ? "Active" : "Closed"}
@@ -94,82 +81,92 @@ const PollCard: React.FC<PollCardProps> = ({
       </div>
 
       {error && (
-        <div className="mb-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+        <div className="text-red-600 text-sm bg-red-50 p-2 rounded mb-4">
           {error}
         </div>
       )}
 
-      <div className="space-y-3">
-        {poll.options.map((option, index) => {
-          const voteCount = results?.votes[index] || 0;
-          const percentage = results?.totalVotes
-            ? (voteCount / results.totalVotes) * 100
-            : 0;
-          const barWidth = results?.totalVotes
-            ? (voteCount / maxVotes) * 100
-            : 0;
-
-          return (
-            <div key={index} className="relative">
-              <div className="flex items-center justify-between mb-1">
-                <label className="flex items-center cursor-pointer">
-                  {poll.isActive && (
-                    <input
-                      type="radio"
-                      name={`poll-${poll.id}`}
-                      value={index}
-                      checked={selectedOption === index}
-                      onChange={() => setSelectedOption(index)}
-                      className="mr-2"
-                    />
-                  )}
-                  <span className="text-sm font-medium text-gray-700">
-                    {option}
-                  </span>
-                </label>
-                <span className="text-sm text-gray-500">
-                  {voteCount} ({percentage.toFixed(1)}%)
-                </span>
-              </div>
-
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${barWidth}%` }}
-                ></div>
-              </div>
+      {!showResults && poll.isActive ? (
+        <div className="space-y-2">
+          <p className="text-sm text-gray-600 mb-3">Cast your vote:</p>
+          {poll.options.map((option, index) => (
+            <button
+              key={index}
+              onClick={() => handleVote(index)}
+              disabled={isVoting}
+              className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-blue-50 border border-gray-200 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      ) : (
+        results && (
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <p className="text-sm text-gray-600">
+                Results ({results.totalVotes} vote
+                {results.totalVotes !== 1 ? "s" : ""}):
+              </p>
             </div>
-          );
-        })}
-      </div>
+            {results.options.map((option, index) => {
+              const votes = results.votes[index];
+              const percentage =
+                results.totalVotes > 0 ? (votes / results.totalVotes) * 100 : 0;
 
-      <div className="mt-4 flex gap-2">
-        {poll.isActive && selectedOption !== null && (
-          <button
-            onClick={handleVote}
-            disabled={voting}
-            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {voting ? "Voting..." : "Cast Vote"}
-          </button>
-        )}
+              return (
+                <div key={index} className="space-y-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-700">{option}</span>
+                    <span className="text-gray-500">
+                      {votes} vote{votes !== 1 ? "s" : ""} (
+                      {percentage.toFixed(1)}%)
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${percentage}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )
+      )}
 
-        {poll.isActive && isCreator && (
-          <button
-            onClick={handleClosePoll}
-            disabled={closing}
-            className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {closing ? "Closing..." : "Close Poll"}
-          </button>
-        )}
-      </div>
+      <div className="flex justify-between items-center mt-4 pt-4 border-t">
+        <div className="text-xs text-gray-500">
+          Created: {new Date(poll.createdAt).toLocaleDateString()}
+          {poll.closedAt && (
+            <span>
+              {" "}
+              • Closed: {new Date(poll.closedAt).toLocaleDateString()}
+            </span>
+          )}
+        </div>
 
-      <div className="mt-3 text-xs text-gray-400">
-        Created: {new Date(poll.createdAt).toLocaleDateString()}
-        {poll.closedAt && (
-          <span> • Closed: {new Date(poll.closedAt).toLocaleDateString()}</span>
-        )}
+        <div className="flex gap-2">
+          {poll.isActive && (
+            <button
+              onClick={toggleResults}
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              {showResults ? "Vote" : "View Results"}
+            </button>
+          )}
+
+          {poll.isActive && (
+            <button
+              onClick={handleClosePoll}
+              disabled={isClosing}
+              className="text-sm text-red-600 hover:text-red-800 disabled:opacity-50"
+            >
+              {isClosing ? "Closing..." : "Close Poll"}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
