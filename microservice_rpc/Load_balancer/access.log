@@ -16,3 +16,11 @@
 [06/Oct/2025:10:40:07 -0500] "POST /polling.PollService/ListPolls HTTP/2.0" status 200 upstream 127.0.0.1:50052
 [06/Oct/2025:10:40:07 -0500] "POST /polling.VoteService/CastVote HTTP/2.0" status 200 upstream [::1]:50051
 [06/Oct/2025:10:40:07 -0500] "POST /polling.ResultService/GetPollResults HTTP/2.0" status 200 upstream 127.0.0.1:50051
+[11/Oct/2025:22:29:09 -0500] "POST /polling.PollService/CreatePoll HTTP/2.0" status 200 upstream [::1]:50051
+[11/Oct/2025:22:29:09 -0500] "POST /polling.PollService/ListPolls HTTP/2.0" status 200 upstream 127.0.0.1:50051
+[11/Oct/2025:22:29:13 -0500] "POST /polling.PollService/CreatePoll HTTP/2.0" status 200 upstream [::1]:50052
+[11/Oct/2025:22:29:13 -0500] "POST /polling.PollService/ListPolls HTTP/2.0" status 200 upstream 127.0.0.1:50052
+[11/Oct/2025:22:29:14 -0500] "POST /polling.PollService/CreatePoll HTTP/2.0" status 200 upstream [::1]:50051
+[11/Oct/2025:22:29:14 -0500] "POST /polling.PollService/ListPolls HTTP/2.0" status 200 upstream 127.0.0.1:50051
+[11/Oct/2025:22:29:15 -0500] "POST /polling.PollService/CreatePoll HTTP/2.0" status 200 upstream [::1]:50052
+[11/Oct/2025:22:29:15 -0500] "POST /polling.PollService/ListPolls HTTP/2.0" status 200 upstream 127.0.0.1:50052

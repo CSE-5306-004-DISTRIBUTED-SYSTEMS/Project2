@@ -11,16 +11,16 @@ def run_test():
 
 
         # # --- 1. create a poll ----
-        # print("----1. creating a new poll----")
-        # create_request = polling_pb2.CreatePollRequest(
-        #     poll_questions = "What is your favorite animals?",
-        #     options = ["dog","cat","bird","spider"]
-        # )
+        print("----1. creating a new poll----")
+        create_request = polling_pb2.CreatePollRequest(
+            poll_questions = "What is your favorite animals?",
+            options = ["dog","cat","bird","spider"]
+        )
 
-        # create_poll = poll_stub.CreatePoll(create_request)
+        create_poll = poll_stub.CreatePoll(create_request)
 
-        # poll_id = create_poll.uuid
-        # print(f"Poll created successfully with ID: {poll_id}\n")
+        poll_id = create_poll.uuid
+        print(f"Poll created successfully with ID: {poll_id}\n")
 
         # --2. List all polls ---- 
         print("---2. Listing all polls---")
@@ -30,25 +30,25 @@ def run_test():
         for poll in list_response.polls:
             print(f"-ID: {poll.uuid}, Question: {poll.poll_questions}, Status: {poll.status}\n")
 
-        # --- 3. Cast a Vote --- 
-        print("------3. Caste Vote------")
-        vote_request = polling_pb2.CastVoteRequest(
-            uuid="c905c351-6129-4f05-970e-0d96498adc30",
-            userID = "John-Song4",
-            select_options="dog"
-        )
-        vote_response = vote_stub.CastVote(vote_request)
-        print(f"Vote cast status: {vote_response.status}\n")
+        # # --- 3. Cast a Vote --- 
+        # print("------3. Caste Vote------")
+        # vote_request = polling_pb2.CastVoteRequest(
+        #     uuid="c905c351-6129-4f05-970e-0d96498adc30",
+        #     userID = "John-Song4",
+        #     select_options="dog"
+        # )
+        # vote_response = vote_stub.CastVote(vote_request)
+        # print(f"Vote cast status: {vote_response.status}\n")
 
 
         #------ 4. Get Poll Results ---------- 
-        print("--- 4. Getting poll results ---")
-        result_request = polling_pb2.PollRequest(uuid = "c905c351-6129-4f05-970e-0d96498adc30")
-        result_response = result_stub.GetPollResults(result_request)
-        print(f"Results for poll {result_response.uuid} --'{result_response.poll_questions}':")
-        for option, count in result_response.results.items():
-            print(f"- {option}: {count} votes")
-        print("")
+        # print("--- 4. Getting poll results ---")
+        # result_request = polling_pb2.PollRequest(uuid = "c905c351-6129-4f05-970e-0d96498adc30")
+        # result_response = result_stub.GetPollResults(result_request)
+        # print(f"Results for poll {result_response.uuid} --'{result_response.poll_questions}':")
+        # for option, count in result_response.results.items():
+        #     print(f"- {option}: {count} votes")
+        # print("")
 
         # #------- 5. Close the Poll ---------
         #         # --- 5. Close the Poll ---
