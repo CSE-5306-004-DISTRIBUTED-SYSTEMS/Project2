@@ -93,4 +93,37 @@ There are 5 nodes for this distributed systems.
 - gRPC
 - PostgreSQL  
 
+#### Quick Run  
+
+##### pull images 
+- `docker pull johncxsong/primary-database-node4` 
+- `docker pull johncxsong/replica-database-node5`
+- `docker pull johncxsong/backup-server-node3`
+- `docker pull johncxsong/primary-server-node2`
+- `docker pull johncxsong/load-balance-node1`
+
+##### Run. 
+1. `docker network create voting-net`
+2. `docker run --name db-primary \
+  --network voting-net \
+  -p 5432:5432 \
+  johncxsong/primary-database-node4`
+
+3. `docker run --name db-replica \
+  --network voting-net \
+  --link db-primary:db-primary \
+  johncxsong/replica-database-node5`
+
+4. `docker run --network voting-net --name primary -p 50051:50051 johncxsong/primary-server-node2`
+
+5. `docker run --network voting-net --name backup -p 50052:50052 johncxsong/backup-server-node3`
+
+6. `docker run --network voting-net --name loader -p 8080:8080 johncxsong/load-balance-node1`
+
+7. `pip install -r ./app/requirement.txt`
+
+8. `python test_client.py`  create a poll 
+
+9. `python test.py` copy UUID for voting
+
 

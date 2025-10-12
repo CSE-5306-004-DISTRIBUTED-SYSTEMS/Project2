@@ -69,11 +69,16 @@ The script generates:
 - `grpc_performance.py` - gRPC performance testing script
 - `grpc_test_runner.py` - gRPC test runner
 
+**Visualization:**
+
+- `generate_graphs.py` - Creates comparison graphs from JSON results
+
 ## Requirements
 
 - Python 3.7+
 - aiohttp library (for REST API testing)
 - grpcio library (for gRPC testing)
+- matplotlib and numpy (for graph generation)
 - REST API running on localhost:3005 (for REST testing)
 - gRPC service running on localhost:8080 (for gRPC testing)
 
@@ -92,4 +97,7 @@ python rest_api_performance.py --users 10 50 100
 python grpc_test_runner.py
 # Or run directly with custom user counts
 python grpc_performance.py --users 10 50 100
+
+# Generate comparison graphs
+python generate_graphs.py
 ```

@@ -60,19 +60,19 @@ The REST-based architecture implements a distributed polling system using HTTP c
 
 ## 3. Evaluation
 
-Perofrmance (latency, throughput) & Scalability.
-
-### 3.0 Hardware
-
-PC: Macbook air (my machine?) / your machine
-
-### 3.1 Experiement (write-heavy scalability) - Voting
-
-- Many users vote at the same time.
+Performance (latency, throughput) & Scalability.
 
 $Latency = T_{response} - T_{request}$.
 
 $Throughput = \frac{Total \space Requests}{Latency} $
+
+### 3.0 Hardware
+
+Tests were conducted on a Macbook Pro with the M2 Pro chip and 16gb of ram.
+
+### 3.1 Experiement (write-heavy scalability) - Voting
+
+This test simulates multiple users casting votes in a poll at the same time.
 
 #### REST HTTPS Evaluation
 
@@ -84,11 +84,21 @@ $Throughput = \frac{Total \space Requests}{Latency} $
 | 500         | Voting   | 140.42           | 1895.35            |
 | 1000        | Voting   | 225.59           | 2357.78            |
 
+#### Microservice gRPC Evaluation
+
+| Total Users | Scenario | Avg Latency (ms) | Throughput (req/s) |
+| ----------- | -------- | ---------------- | ------------------ |
+| 10          | Voting   | 16.98            | 510.52             |
+| 50          | Voting   | 30.68            | 920.67             |
+| 100         | Voting   | 56.80            | 848.71             |
+| 500         | Voting   | 212.70           | 1073.58            |
+| 1000        | Voting   | 352.02           | 1228.48            |
+
 ### 3.2 Experiement (read-heavy scalability) - Showing poll results
 
-- Many users get the result at the same time.
+This test simulates multiple users accessing poll results at the same time.
 
-#### REST HTTPS Evaluation
+#### REST HTTPS Evaluation (Table 1)
 
 | Total Users | Scenario | Avg Latency (ms) | Throughput (req/s) |
 | ----------- | -------- | ---------------- | ------------------ |
@@ -98,11 +108,26 @@ $Throughput = \frac{Total \space Requests}{Latency} $
 | 500         | Results  | 78.59            | 2866.68            |
 | 1000        | Results  | 109.58           | 4043.72            |
 
-## 4. Analysis Between Communicaton and Structure.
+#### Microservice gRPC Evaluation (Table 2)
 
-### 4.1 Communications (HTTP vs. gRPC)
+| Total Users | Scenario | Avg Latency (ms) | Throughput (req/s) |
+| ----------- | -------- | ---------------- | ------------------ |
+| 10          | Results  | 11.85            | 695.41             |
+| 50          | Results  | 22.83            | 1233.66            |
+| 100         | Results  | 52.67            | 1001.24            |
+| 500         | Results  | 184.07           | 1238.45            |
+| 1000        | Results  | 355.32           | 1264.62            |
 
-### 4.2 Structures (Resources vs. microservices)
+## 4. Analysis of Test Results
+
+![Performance Graphs](../Project2/performance_tests/performance_comparison_graphs.png)
+(Figure 1)
+
+Stress tests on the read and write performance of both architectures show a consistent advantage for the HTTPS-based REST system, which outperforms the gRPC implementation in nearly all metrics except for latency at very low user counts (Fig. 1). This outcome is counterintuitive, as gRPC typically offers superior efficiency due to its binary protocol and multiplexed streams.
+
+To investigate the discrepancy, we examined architectural differences that could contribute to the observed slowdown. The gRPC setup uses an older version of PostgreSQL, which may impact query performance. More importantly, this system maintains a live backup instance, introducing additional replication overhead. These factors likely compound under higher loads.
+
+Finally, the gRPC service was set to a `max_workers` value of `10`, likely creating a threading bottleneck, while the REST implementation operates with effectively unbounded asynchronous requests. This limitation likely accounts for the gRPC system’s elevated latency and reduced throughput as concurrency increases.
 
 ## 5. AI Usage
 
