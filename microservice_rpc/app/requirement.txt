@@ -1,0 +1,14 @@
+docstring-to-markdown==0.12
+flake8==6.0.0
+grpcio==1.74.0
+grpcio-tools==1.74.0
+packaging==23.0
+protobuf==6.32.0
+pycodestyle==2.10.0
+pydocstyle==6.2.3
+pyflakes==3.0.1
+python-lsp-server==1.7.1
+pytoolconfig==1.2.5
+pytz==2025.2
+rope==1.7.0
+psycopg2-binary==2.9.10
