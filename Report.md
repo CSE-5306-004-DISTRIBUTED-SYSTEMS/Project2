@@ -120,7 +120,7 @@ This test simulates multiple users accessing poll results at the same time.
 
 ## 4. Analysis of Test Results
 
-![Performance Graphs](../Project2/performance_tests/performance_comparison_graphs.png)
+![Performance Graphs](./performance_tests/performance_comparison_graphs.png)
 (Figure 1)
 
 Stress tests on the read and write performance of both architectures show a consistent advantage for the HTTPS-based REST system, which outperforms the gRPC implementation in nearly all metrics except for latency at very low user counts (Fig. 1). This outcome is counterintuitive, as gRPC typically offers superior efficiency due to its binary protocol and multiplexed streams.
