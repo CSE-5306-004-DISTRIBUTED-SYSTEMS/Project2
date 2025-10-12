@@ -41,12 +41,13 @@ def test_connection():
             connection.close()
             print("PostgreSQL connection closed.")
 
+
 def get_db_connection():
     return psycopg2.connect(
             dbname = "pollsdb",
             user="postgres",
             password="postgres",
-            host ="localhost",
+            host ="db-primary",
             port =5432
         )
 
@@ -178,7 +179,7 @@ def serve():
 
 
 if __name__ == '__main__':
-    test_connection()
+    # test_connection()
     serve()
 
 # port = os.environ.get("GRPC_PORT", "50051") # Default to 50051 if not set

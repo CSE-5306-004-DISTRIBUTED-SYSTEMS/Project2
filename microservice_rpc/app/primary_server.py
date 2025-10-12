@@ -20,7 +20,7 @@ def test_connection():
             dbname = "pollsdb",
             user="postgres",
             password="postgres",
-            host ="localhost",
+            host ="db-primary",
             port =5432
         )
         cursor = connection.cursor()
@@ -46,7 +46,7 @@ def get_db_connection():
             dbname = "pollsdb",
             user="postgres",
             password="postgres",
-            host ="localhost",
+            host ="db-primary",
             port =5432
         )
 
@@ -177,7 +177,6 @@ def serve():
 
 
 if __name__ == '__main__':
-    test_connection()
     serve()
 
 
