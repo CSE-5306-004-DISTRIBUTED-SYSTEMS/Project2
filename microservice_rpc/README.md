@@ -49,8 +49,7 @@ The system consists of:
 **2. Access the system:**
    - gRPC endpoint: `localhost:8080`
    - Primary-standby database: `localhost:5432`
-=======
-- **Replica Database**: PostgreSQL replica on port 5433
+   - **Replica Database**: internal
 
 ## 🚀 Quick Start
 
