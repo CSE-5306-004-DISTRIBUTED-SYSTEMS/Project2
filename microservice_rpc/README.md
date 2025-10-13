@@ -85,11 +85,9 @@ python grpc_test_runner.py
 | Primary Server | 50051 | Main gRPC server         |
 | Backup Server  | 50052 | Backup gRPC server       |
 | Primary DB     | 5432  | PostgreSQL master        |
-<<<<<<< HEAD
 | Replica DB     | internal | PostgreSQL replica       |
-=======
-| Replica DB     | 5433  | PostgreSQL replica       |
->>>>>>> main
+
+
 
 ## 🔧 Configuration
 
