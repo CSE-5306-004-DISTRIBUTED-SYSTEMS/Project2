@@ -30,6 +30,7 @@ def run_test():
         for poll in list_response.polls:
             print(f"-ID: {poll.uuid}, Question: {poll.poll_questions}, Status: {poll.status}\n")
 
+<<<<<<< HEAD
         # # # --- 3. Cast a Vote --- 
         # print("------3. Caste Vote------")
         # vote_request = polling_pb2.CastVoteRequest(
@@ -39,6 +40,17 @@ def run_test():
         # )
         # vote_response = vote_stub.CastVote(vote_request)
         # print(f"Vote cast status: {vote_response.status}\n")
+=======
+        # --- 3. Cast a Vote --- 
+        print("------3. Caste Vote------")
+        vote_request = polling_pb2.CastVoteRequest(
+            uuid="c28ef63-95a0-4f6e-8048-48347c928d88",
+            userID = "John-Song4",
+            select_options="dog"
+        )
+        vote_response = vote_stub.CastVote(vote_request)
+        print(f"Vote cast status: {vote_response.status}\n")
+>>>>>>> main
 
 
         # #------ 4. Get Poll Results ---------- 
