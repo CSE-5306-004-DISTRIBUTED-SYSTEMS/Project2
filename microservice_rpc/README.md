@@ -10,6 +10,7 @@ The system consists of:
 - **Backup gRPC Server**: Handles requests on port 50052
 - **Load Balancer (Nginx)**: Distributes gRPC requests on port 8080
 - **Primary Database**: PostgreSQL master on port 5432
+<<<<<<< HEAD
 - **Replica Database**: PostgreSQL replica with internal connection
 
 ## 🚀 Quick Start
@@ -48,6 +49,23 @@ The system consists of:
 **2. Access the system:**
    - gRPC endpoint: `localhost:8080`
    - Primary-standby database: `localhost:5432`
+=======
+- **Replica Database**: PostgreSQL replica on port 5433
+
+## 🚀 Quick Start
+
+1. **Start all services:**
+
+   ```bash
+   cd microservice_rpc
+   docker-compose up --build
+   ```
+
+2. **Access the system:**
+   - gRPC endpoint: `localhost:8080`
+   - Primary database: `localhost:5432`
+   - Replica database: `localhost:5433`
+>>>>>>> main
 
 ## 🧪 Testing
 
@@ -67,7 +85,11 @@ python grpc_test_runner.py
 | Primary Server | 50051 | Main gRPC server         |
 | Backup Server  | 50052 | Backup gRPC server       |
 | Primary DB     | 5432  | PostgreSQL master        |
+<<<<<<< HEAD
 | Replica DB     | internal | PostgreSQL replica       |
+=======
+| Replica DB     | 5433  | PostgreSQL replica       |
+>>>>>>> main
 
 ## 🔧 Configuration
 
