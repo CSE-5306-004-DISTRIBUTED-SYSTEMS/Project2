@@ -10,7 +10,6 @@ The system consists of:
 - **Backup gRPC Server**: Handles requests on port 50052
 - **Load Balancer (Nginx)**: Distributes gRPC requests on port 8080
 - **Primary Database**: PostgreSQL master on port 5432
-<<<<<<< HEAD
 - **Replica Database**: PostgreSQL replica with internal connection
 
 ## 🚀 Quick Start
